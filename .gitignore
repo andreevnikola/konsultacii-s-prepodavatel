@@ -44,3 +44,5 @@ next-env.d.ts
 
 # test database
 /test.db
+
+/dev.db
