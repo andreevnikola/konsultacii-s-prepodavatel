@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Teacher {
+  id           String   @id @default(cuid())
+  fullName     String
+  email        String   @unique
+  passwordHash String
+  subject      String
+  qrCodeSlug   String   @unique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  availabilities ConsultationAvailability[]
+  bookings       Booking[]
+}
+
+model ConsultationAvailability {
+  id        String   @id @default(cuid())
+  teacherId String
+  date      DateTime
+  startTime String
+  endTime   String
+  room      String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  teacher  Teacher   @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  bookings Booking[]
+}
+
+model Booking {
+  id             String        @id @default(cuid())
+  teacherId      String
+  availabilityId String
+  studentName    String
+  studentClass   String
+  studentEmail   String
+  status         BookingStatus @default(CONFIRMED)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  teacher      Teacher                  @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  availability ConsultationAvailability @relation(fields: [availabilityId], references: [id], onDelete: Cascade)
+}
+
+enum BookingStatus {
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
