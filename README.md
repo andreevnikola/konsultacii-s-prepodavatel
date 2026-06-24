@@ -187,6 +187,9 @@ cp .env.example .env   # or create manually:
 echo 'DATABASE_URL="file:./dev.db"' > .env
 echo 'SESSION_SECRET="change-this-to-a-long-random-string"' >> .env
 
+# The generated Prisma client is not included in the repository and must be created locally after cloning the project.
+npx prisma generate
+
 # 3. Push database schema
 npx prisma db push
 
